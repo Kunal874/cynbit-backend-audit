@@ -21,7 +21,8 @@ Tick a box in the same commit that finishes the step. The first unticked box is 
 - [x] **1.4** HTTP response headers (security, caching, server leakage)
 - [x] **1.5** Public files: robots.txt, sitemap.xml, security.txt
 - [x] **1.6** Frontend bundle inspection (framework version, API URLs, exposed keys, source maps)
-- [ ] **1.7** Network capture of normal browsing → endpoint inventory *(logged-in part needs Kunal)*
+- [x] **1.7a** Network capture of public pages → endpoint inventory
+- [ ] **1.7b** Logged-in assessment-portal flow (own account) → add to endpoint inventory *(needs Kunal)*
 - [ ] **2.1** Per-endpoint API analysis (methods, schemas, status codes, versioning)
 - [ ] **2.2** Data handling: over-fetching, PII in payloads, input validation signals
 - [ ] **2.3** Error handling: 404s, error envelope, stack-trace leakage
