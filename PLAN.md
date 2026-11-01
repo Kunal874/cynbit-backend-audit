@@ -31,7 +31,7 @@ Tick a box in the same commit that finishes the step. The first unticked box is 
 - [ ] **2.6** Auth and session handling (own account only) *(needs Kunal)*
 - [x] **2.7** Framework version vs. public advisories
 - [x] **3.1** Server timing: DNS / TLS / TTFB / total
-- [ ] **3.2** Lighthouse / PageSpeed (mobile + desktop)
+- [x] **3.2** Lighthouse / PageSpeed (mobile + desktop)
 - [x] **3.3** Static asset caching, compression, HTTP/2–3, ISR behaviour
 - [ ] **3.4** Page weight and request waterfall
 - [ ] **4.1** `REPORT.md`: architecture, API structure, findings table
