@@ -27,7 +27,7 @@ Tick a box in the same commit that finishes the step. The first unticked box is 
 - [x] **2.2** Data handling: over-fetching, PII in payloads, input validation signals
 - [x] **2.3** Error handling: 404s, error envelope, stack-trace leakage
 - [x] **2.4** CORS, caching and HTTP semantics on API responses
-- [ ] **2.5** Rate-limit signals (headers only)
+- [x] **2.5** Rate-limit signals (headers only)
 - [ ] **2.6** Auth and session handling (own account only) *(needs Kunal)*
 - [ ] **2.7** Framework version vs. public advisories
 - [ ] **3.1** Server timing: DNS / TLS / TTFB / total
