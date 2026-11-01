@@ -23,7 +23,7 @@ Tick a box in the same commit that finishes the step. The first unticked box is 
 - [x] **1.6** Frontend bundle inspection (framework version, API URLs, exposed keys, source maps)
 - [x] **1.7a** Network capture of public pages → endpoint inventory
 - [ ] **1.7b** Logged-in assessment-portal flow (own account) → add to endpoint inventory *(needs Kunal)*
-- [ ] **2.1** Per-endpoint API analysis (methods, schemas, status codes, versioning)
+- [x] **2.1** Per-endpoint API analysis (methods, schemas, status codes, versioning)
 - [ ] **2.2** Data handling: over-fetching, PII in payloads, input validation signals
 - [ ] **2.3** Error handling: 404s, error envelope, stack-trace leakage
 - [ ] **2.4** CORS, caching and HTTP semantics on API responses
