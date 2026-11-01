@@ -1,0 +1,34 @@
+# 3.1 Server timing, from India over home broadband, 2026-11-01 23:12 IST, 3 runs per URL, 2 s apart
+# curl 8.21 (Git Bash build, HTTP/1.1 only, so the protocol comes from the browser in 3.3); seconds; bytes = compressed body
+https://cynbit.in/ run=1 code=200 dns=0.366719 conn=0.412409 tls=0.566552 ttfb=0.809538 total=0.809655 redirect=0.372894 bytes=15402
+https://cynbit.in/ run=2 code=200 dns=0.020282 conn=0.060026 tls=0.157272 ttfb=0.239757 total=0.239870 redirect=0.114126 bytes=15402
+https://cynbit.in/ run=3 code=200 dns=0.026273 conn=0.073237 tls=0.234209 ttfb=0.457111 total=0.457231 redirect=0.226108 bytes=15402
+https://www.cynbit.in/ run=1 code=200 dns=0.017807 conn=0.024156 tls=0.075798 ttfb=0.122084 total=0.122458 redirect=0.000000 bytes=15402
+https://www.cynbit.in/ run=2 code=200 dns=0.034334 conn=0.044828 tls=0.092161 ttfb=0.161798 total=0.161900 redirect=0.000000 bytes=15402
+https://www.cynbit.in/ run=3 code=200 dns=0.009509 conn=0.056336 tls=0.126041 ttfb=0.196990 total=0.197069 redirect=0.000000 bytes=15402
+https://www.cynbit.in/services run=1 code=200 dns=0.010150 conn=0.021885 tls=0.077156 ttfb=0.148618 total=0.148799 redirect=0.000000 bytes=11245
+https://www.cynbit.in/services run=2 code=200 dns=0.008810 conn=0.013369 tls=0.063624 ttfb=0.113260 total=0.113337 redirect=0.000000 bytes=11245
+https://www.cynbit.in/services run=3 code=200 dns=0.009353 conn=0.040627 tls=0.077517 ttfb=0.134632 total=0.134807 redirect=0.000000 bytes=11245
+https://www.cynbit.in/careers run=1 code=200 dns=0.013531 conn=0.028195 tls=0.067981 ttfb=1.146306 total=1.398689 redirect=0.000000 bytes=13503
+https://www.cynbit.in/careers run=2 code=200 dns=0.012061 conn=0.042877 tls=0.080916 ttfb=0.495213 total=0.509224 redirect=0.000000 bytes=13435
+https://www.cynbit.in/careers run=3 code=200 dns=0.010672 conn=0.026639 tls=0.062745 ttfb=0.473279 total=0.663734 redirect=0.000000 bytes=13503
+https://www.cynbit.in/blog run=1 code=200 dns=0.004056 conn=0.020229 tls=0.174838 ttfb=1.399330 total=1.471189 redirect=0.000000 bytes=12655
+https://www.cynbit.in/blog run=2 code=200 dns=0.011531 conn=0.042612 tls=0.081329 ttfb=0.815791 total=0.953091 redirect=0.000000 bytes=12655
+https://www.cynbit.in/blog run=3 code=200 dns=0.017168 conn=0.047648 tls=0.099026 ttfb=0.699710 total=0.955017 redirect=0.000000 bytes=12655
+https://www.cynbit.in/blog/serverless-mesh-future run=1 code=200 dns=0.011492 conn=0.042377 tls=0.076904 ttfb=0.726386 total=0.842285 redirect=0.000000 bytes=11238
+https://www.cynbit.in/blog/serverless-mesh-future run=2 code=200 dns=0.018212 conn=0.024205 tls=0.209501 ttfb=0.836777 total=1.065152 redirect=0.000000 bytes=11238
+https://www.cynbit.in/blog/serverless-mesh-future run=3 code=200 dns=0.018991 conn=0.050406 tls=0.099066 ttfb=0.800019 total=1.034953 redirect=0.000000 bytes=11238
+https://www.cynbit.in/case-studies run=1 code=200 dns=0.011045 conn=0.043103 tls=0.194453 ttfb=0.698561 total=0.698720 redirect=0.000000 bytes=14543
+https://www.cynbit.in/case-studies run=2 code=200 dns=0.025233 conn=0.042006 tls=0.108612 ttfb=0.543952 total=0.771075 redirect=0.000000 bytes=14543
+https://www.cynbit.in/case-studies run=3 code=200 dns=0.007926 conn=0.025204 tls=0.118016 ttfb=0.675675 total=0.739705 redirect=0.000000 bytes=14543
+
+# Summary: server-side time ≈ ttfb − tls (connection setup removed), 3 runs
+# route | rendering | avg | min | max
+/services         SSG (edge HIT)    59 ms   50   71
+/                 SSG (edge HIT)    62 ms   46   71
+cynbit.in → www   307 redirect hop  +114..373 ms extra (redirect time), never cached
+/case-studies     dynamic          499 ms  435  558
+/careers          dynamic          634 ms  411 1078  (no DB data in payload)
+/blog/[slug]      dynamic          659 ms  627  701
+/blog             dynamic          853 ms  601 1224
+# Dynamic routes are ~8-14x slower than static ones for content that changes rarely.
