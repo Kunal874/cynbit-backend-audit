@@ -38,7 +38,7 @@ Tick a box in the same commit that finishes the step. The first unticked box is 
 - [x] **4.2** `REPORT.md`: detailed findings with evidence
 - [x] **5.1** `recommendations/`: code snippets for each Medium+ finding
 - [x] **5.2** Target architecture diagram + prioritized roadmap
-- [ ] **6.1** `README.md`: executive summary + links
+- [x] **6.1** `README.md`: executive summary + links
 - [ ] **6.2** Hygiene pass (no tokens/cookies/PII), render check on GitHub
 - [ ] **6.3** Submit links on the assessment portal *(Kunal)*
 
