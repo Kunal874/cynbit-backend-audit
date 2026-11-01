@@ -1,0 +1,164 @@
+## /
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: *
+Age: 274704
+Cache-Control: public, max-age=0, must-revalidate
+Content-Disposition: inline
+Content-Encoding: br
+Content-Type: text/html; charset=utf-8
+Date: Sun, 01 Nov 2026 17:30:36 GMT
+Etag: W/"babdce9795e4ef3d84461090987852d3"
+Server: Vercel
+Strict-Transport-Security: max-age=63072000
+Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+X-Matched-Path: /
+X-Nextjs-Prerender: 1
+X-Nextjs-Stale-Time: 300
+X-Vercel-Cache: HIT
+X-Vercel-Id: bom1::fh8sh-1793554236927-2286832bd6cc
+Transfer-Encoding: chunked
+
+## /careers
+HTTP/1.1 200 OK
+Age: 0
+Cache-Control: private, no-cache, no-store, max-age=0, must-revalidate
+Content-Encoding: br
+Content-Type: text/html; charset=utf-8
+Date: Sun, 01 Nov 2026 17:30:40 GMT
+Link: </_next/static/media/636a5ac981f94f8b-s.p.woff2>; rel=preload; as="font"; crossorigin=""; type="font/woff2", </_next/static/media/8760c4774489e4ba-s.p.woff2>; rel=preload; as="font"; crossorigin=""; type="font/woff2", </logo.svg>; rel=preload; as="image", </_next/static/css/ab1584e3d32cd2d2.css>; rel=preload; as="style", </_next/static/css/2111bc7b10569bdd.css>; rel=preload; as="style"
+Server: Vercel
+Strict-Transport-Security: max-age=63072000
+Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+X-Matched-Path: /careers
+X-Powered-By: Next.js
+X-Vercel-Cache: MISS
+X-Vercel-Id: bom1::iad1::86wdh-1793554239340-a8dc93231136
+Transfer-Encoding: chunked
+
+## /contact
+HTTP/1.1 200 OK
+Age: 2938
+Cache-Control: public, max-age=0, must-revalidate
+Content-Encoding: br
+Content-Type: text/html; charset=utf-8
+Date: Fri, 30 Oct 2026 05:33:30 GMT
+Etag: W/"iuqg0l21p91ded"
+Server: Vercel
+Strict-Transport-Security: max-age=63072000
+Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+X-Matched-Path: /contact
+X-Nextjs-Prerender: 1
+X-Nextjs-Stale-Time: 300
+X-Powered-By: Next.js
+X-Vercel-Cache: HIT
+X-Vercel-Id: bom1::iad1::tbqvp-1793554242753-9113d725dabd
+Transfer-Encoding: chunked
+
+## /services
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: *
+Age: 274618
+Cache-Control: public, max-age=0, must-revalidate
+Content-Disposition: inline
+Content-Encoding: br
+Content-Type: text/html; charset=utf-8
+Date: Sun, 01 Nov 2026 17:30:45 GMT
+Etag: W/"c23fc90c848362d61a90ee5132fac2b2"
+Server: Vercel
+Strict-Transport-Security: max-age=63072000
+Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+X-Matched-Path: /services
+X-Nextjs-Prerender: 1
+X-Nextjs-Stale-Time: 300
+X-Vercel-Cache: HIT
+X-Vercel-Id: bom1::gb6cc-1793554245310-5ac56f7f5e0a
+Transfer-Encoding: chunked
+
+## /blog
+HTTP/1.1 200 OK
+Age: 0
+Cache-Control: private, no-cache, no-store, max-age=0, must-revalidate
+Content-Encoding: br
+Content-Type: text/html; charset=utf-8
+Date: Sun, 01 Nov 2026 17:30:48 GMT
+Link: </_next/static/media/636a5ac981f94f8b-s.p.woff2>; rel=preload; as="font"; crossorigin=""; type="font/woff2", </_next/static/media/8760c4774489e4ba-s.p.woff2>; rel=preload; as="font"; crossorigin=""; type="font/woff2", </logo.svg>; rel=preload; as="image", </_next/static/css/ab1584e3d32cd2d2.css>; rel=preload; as="style", </_next/static/css/2111bc7b10569bdd.css>; rel=preload; as="style"
+Server: Vercel
+Strict-Transport-Security: max-age=63072000
+Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+X-Matched-Path: /blog
+X-Powered-By: Next.js
+X-Vercel-Cache: MISS
+X-Vercel-Id: bom1::iad1::6fc7b-1793554247677-26a7c3f9c567
+Transfer-Encoding: chunked
+
+## /blog/serverless-mesh-future
+HTTP/1.1 200 OK
+Age: 0
+Cache-Control: private, no-cache, no-store, max-age=0, must-revalidate
+Content-Encoding: br
+Content-Type: text/html; charset=utf-8
+Date: Sun, 01 Nov 2026 17:30:51 GMT
+Link: </_next/static/media/636a5ac981f94f8b-s.p.woff2>; rel=preload; as="font"; crossorigin=""; type="font/woff2", </_next/static/media/8760c4774489e4ba-s.p.woff2>; rel=preload; as="font"; crossorigin=""; type="font/woff2", </logo.svg>; rel=preload; as="image", </_next/static/css/ab1584e3d32cd2d2.css>; rel=preload; as="style", </_next/static/css/2111bc7b10569bdd.css>; rel=preload; as="style"
+Server: Vercel
+Strict-Transport-Security: max-age=63072000
+Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+X-Matched-Path: /blog/[slug]
+X-Powered-By: Next.js
+X-Vercel-Cache: MISS
+X-Vercel-Id: bom1::iad1::hn8bs-1793554251241-b23c9f1338e5
+Transfer-Encoding: chunked
+
+## /bitelevate
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: *
+Age: 274403
+Cache-Control: public, max-age=0, must-revalidate
+Content-Disposition: inline
+Content-Encoding: br
+Content-Type: text/html; charset=utf-8
+Date: Sun, 01 Nov 2026 17:30:54 GMT
+Etag: W/"f0c3a6034f0d7346763269875db366af"
+Server: Vercel
+Strict-Transport-Security: max-age=63072000
+Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+X-Matched-Path: /bitelevate
+X-Nextjs-Prerender: 1
+X-Nextjs-Stale-Time: 300
+X-Vercel-Cache: HIT
+X-Vercel-Id: bom1::gm7br-1793554254221-05db50faf557
+Transfer-Encoding: chunked
+
+## /sitemap.xml
+HTTP/1.1 200 OK
+Age: 0
+Cache-Control: public, max-age=0, must-revalidate
+Content-Encoding: br
+Content-Type: application/xml
+Date: Sun, 01 Nov 2026 17:30:59 GMT
+Server: Vercel
+Strict-Transport-Security: max-age=63072000
+Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+X-Matched-Path: /sitemap.xml
+X-Vercel-Cache: MISS
+X-Vercel-Id: bom1::iad1::2t6hb-1793554256456-875fe7b51dd9
+Transfer-Encoding: chunked
+
+## /this-page-does-not-exist
+HTTP/1.1 404 Not Found
+Access-Control-Allow-Origin: *
+Age: 41410
+Cache-Control: public, max-age=0, must-revalidate
+Content-Disposition: inline; filename="404"
+Content-Encoding: br
+Content-Type: text/html; charset=utf-8
+Date: Sun, 01 Nov 2026 17:31:01 GMT
+Etag: W/"fa7fbe530587a530b4fa6a70e39f4d29"
+Last-Modified: Sun, 01 Nov 2026 06:00:50 GMT
+Server: Vercel
+Strict-Transport-Security: max-age=63072000
+X-Matched-Path: /404
+X-Next-Error-Status: 404
+X-Vercel-Cache: HIT
+X-Vercel-Id: bom1::wq9s5-1793554261395-46d747600e5a
+Transfer-Encoding: chunked
+

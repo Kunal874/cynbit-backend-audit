@@ -18,7 +18,7 @@ Tick a box in the same commit that finishes the step. The first unticked box is 
 - [x] **1.1** DNS, hosting, email-auth records
 - [x] **1.2** Subdomains from Certificate Transparency
 - [x] **1.3** TLS certificate and protocol versions
-- [ ] **1.4** HTTP response headers (security, caching, server leakage)
+- [x] **1.4** HTTP response headers (security, caching, server leakage)
 - [x] **1.5** Public files: robots.txt, sitemap.xml, security.txt
 - [ ] **1.6** Frontend bundle inspection (framework version, API URLs, exposed keys, source maps)
 - [ ] **1.7** Network capture of normal browsing → endpoint inventory *(logged-in part needs Kunal)*

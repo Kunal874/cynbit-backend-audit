@@ -1,0 +1,10 @@
+HTTP/1.1 307 Temporary Redirect
+Cache-Control: public, max-age=0, must-revalidate
+Content-Type: text/plain
+Date: Sun, 01 Nov 2026 17:31:03 GMT
+Location: https://www.cynbit.in/
+Server: Vercel
+Strict-Transport-Security: max-age=63072000
+X-Vercel-Id: bom1::hf84s-1793554263652-c0525d5a2135
+Transfer-Encoding: chunked
+

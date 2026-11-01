@@ -23,3 +23,13 @@ Promoted to `REPORT.md` in Phase 4.
 - [2026-11-01 23:03] [1.5] No `/.well-known/security.txt` (returns the 404 page), so there is no vulnerability-disclosure channel (RFC 9116). Candidate **Low**.
 - [2026-11-01 23:03] [1.5] 404 page: correct `404` status, `<meta name="robots" content="noindex">`, custom page, no stack trace. Reveals Next.js App Router (`self.__next_f` RSC payload), build ID `x-Rd73BtzTiCyyJyTHd5H`, GA4 `G-LK6CQWCWX0`. **Good, Info.**
 - [2026-11-01 23:03] [1.5] Products named in metadata: TenantEase, Cynbit Studio, BitElevate.
+- [2026-11-01 23:05] [1.4] **No security headers on any route**: no `Content-Security-Policy`, `X-Frame-Options`/`frame-ancestors`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`. Pages can be framed (clickjacking) and there is no XSS defence-in-depth. Candidate **Medium** (Security). → `evidence/1.4-headers.txt`
+- [2026-11-01 23:05] [1.4] `X-Powered-By: Next.js` on dynamic/ISR routes (`/careers`, `/contact`, `/blog`, `/blog/[slug]`), i.e. `poweredByHeader` not disabled. Candidate **Low**.
+- [2026-11-01 23:05] [1.4] HSTS `max-age=63072000` (2 y) on every route incl. the apex redirect, but no `includeSubDomains`/`preload`; `portal.`, `support.`, `bitelevate.` aren't covered. Candidate **Low**.
+- [2026-11-01 23:05] [1.4] Rendering strategy per route (from `X-Vercel-Cache`, `Cache-Control`, `X-Nextjs-Prerender`):
+  - Static (SSG, edge HIT): `/`, `/services`, `/bitelevate`, `/404`. `Age` ≈ 274 700 s, so the last deploy was ~3.2 days ago.
+  - ISR: `/contact` (prerendered, `Age` 2938, `X-Nextjs-Stale-Time: 300`).
+  - **Fully dynamic, rendered per request**: `/careers`, `/blog`, `/blog/[slug]`, `/sitemap.xml`, all `Cache-Control: private, no-cache, no-store` + `X-Vercel-Cache: MISS`. Blog posts and job listings change rarely, but every view runs a serverless function (and likely a DB query): higher TTFB, cost and cold starts. Probably caused by `cookies()`/`headers()`/`no-store` fetch or `dynamic='force-dynamic'`. Candidate **Medium** (Performance/Architecture). Measure the TTFB gap in 3.1.
+- [2026-11-01 23:05] [1.4] Static pages send `Access-Control-Allow-Origin: *` + `Content-Disposition: inline` (Vercel default for static output). Public HTML without credentials → **Info, not a risk**.
+- [2026-11-01 23:05] [1.4] Apex 307 has `Cache-Control: public, max-age=0, must-revalidate`, so the redirect is never cached and every apex visit pays a round trip. Adds to the 307→308 candidate.
+- [2026-11-01 23:05] [1.4] `Content-Encoding: br` on all HTML ✔. `Server: Vercel` with no version ✔.
