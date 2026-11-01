@@ -132,6 +132,70 @@ Good: the price is never sent by the client, and success is decided by querying 
 - **Errors:** correct `404` status for unknown pages and slugs, custom page, no stack traces. But `/api/*` also returns the HTML 404 page rather than a machine-readable error ([2.3](evidence/2.3-errors.txt)).
 - **Response contract:** Server Actions return ad-hoc objects (`{success, error, orderStatus, …}`) instead of one typed result envelope.
 
+### 4.5 Payload samples
+
+Real excerpts, trimmed with `…`. Samples A–B were captured on 2026-11-01 with one normal `GET`. Samples C–E come from the public client bundle. **No Server Action was sent**, because that would create records.
+
+**A. RSC GET: response headers** (`GET /blog` with `RSC: 1`, the request the browser makes when prefetching or navigating)
+```http
+HTTP/1.1 200 OK
+Content-Type: text/x-component
+Cache-Control: private, no-cache, no-store, max-age=0, must-revalidate
+Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+X-Matched-Path: /blog.rsc
+X-Vercel-Cache: MISS
+```
+The `no-store` + `MISS` combination means every `/blog` navigation or prefetch is a fresh serverless render ([F-06](#f-06)).
+
+**B. RSC GET: body** (React Flight format: one row per line, `id:payload`)
+```text
+1:"$Sreact.fragment"
+2:I[9766,[],""]
+3:I[50960,["2619","static/chunks/2619-04bc32f026a0d946.js", …],"default"]      ← client-component references
+…
+["$","$L16","cmp6kjrcl00039cexi862ilf7",{"delay":0,"children":
+  ["$","$L17",null,{"href":"/blog/ai-digital-marketing-revolution","children":
+    ["$","article",null,{"className":"group cursor-pointer flex flex-col h-full","children":[
+      ["$","$L1b",null,{"alt":"How AI is Revolutionizing Digital Marketing in 2026",
+                        "src":"https://images.unsplash.com/photo-1485827404703-…","loading":"lazy", …}], …
+```
+What this shows:
+- Each blog post arrives as **rendered elements** (`article`, `href`, `alt`, `src`), not as a database row. There's no `createdAt`, `authorId`, `status` or `email`, so **no over-fetching**.
+- The only trace of the database is the React `key` `cmp6kjrcl00039cexi862ilf7`, a CUID, which points to Prisma `@default(cuid())`.
+- The size is 29.7 KB for `/blog`, mostly Tailwind class strings. All five sampled routes are measured in [evidence 2.1](evidence/2.1-payloads.md).
+
+**C. Server Action: request shape** (framework code from the public bundle; this is what every form submission sends)
+```js
+fetch(e.canonicalUrl, {                       // POST to the page's own URL, e.g. https://www.cynbit.in/contact
+  method: "POST",
+  headers: {
+    Accept: RSC_CONTENT_TYPE_HEADER,          // "text/x-component"
+    [ACTION_HEADER]: p,                       // "next-action": <action id from the bundle, e.g. 40247b…>
+    [NEXT_ROUTER_STATE_TREE_HEADER]: …,       // current route tree
+  },
+  body: v,                                    // the encoded arguments (FormData for the forms)
+});
+if ("1" === res.headers.get(NEXT_ACTION_NOT_FOUND_HEADER)) throw new UnrecognizedActionError(…)
+```
+Calling an action takes only the page URL, a `next-action` header with an ID that's in the public JS, and a form body, so it can be scripted without the UI ([F-04](#f-04)).
+
+**D. Server Action: response fields the client reads** (from each page's bundle)
+```js
+// /bitelevate: createBitelevateCashfreeOrder(FormData)
+{ success, orderId, token, paymentSessionId, environment, error }
+// /bitelevate: verifyBitelevatePayment(token, orderId)
+{ success, bitElevateCredentials, orderStatus /* "ACTIVE" = unpaid */, error }
+// /contact: submitInquiry(FormData)
+{ success }
+```
+
+**E. How the contact form handles that response** (minified client code)
+```js
+a = new FormData(e.currentTarget), r = await x(a);   // x = submitInquiry
+t(!1), r.success ? i(!0) : n("Something went wrong. Please try again or email us directly.")
+```
+Only `success` is read. Any failure, whether a validation error, a server error or (later) a rate limit, shows the same generic message, so users can't correct their input and logs can't tell causes apart. This is the concrete case behind [F-12](#f-12).
+
 ---
 
 ## 5. Findings summary
