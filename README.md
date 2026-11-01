@@ -75,6 +75,28 @@ Every observation was written down as soon as I saw it, with a timestamp, in [`n
 
 Plus 7 Low-severity items (analytics before consent, redirect and sitemap issues, minor hardening, error format, structured-data errors, third-party images). See the [full table](REPORT.md#5-findings-summary).
 
+### Evidence at a glance
+
+**1. The page is hidden until JavaScript runs (F-02).** On the left is the server's HTML as delivered, with the scripts removed. Only the navigation bar shows, because the content is wrapped in `opacity:0`. On the right is the same page after JavaScript runs.
+
+| Before JavaScript | After JavaScript |
+|---|---|
+| ![Server HTML without JavaScript: empty page under the navigation bar](evidence/screenshots/home-js-disabled.png) | ![Same page after JavaScript runs: content visible](evidence/screenshots/home-js-enabled.png) |
+
+**2. The result on mobile (Lighthouse).** Performance 56, first content at 9.1 s, and four blank frames in the filmstrip.
+
+![Lighthouse mobile report for www.cynbit.in](evidence/screenshots/lighthouse-mobile.png)
+
+**3. Pages rebuilt on every visit are 8–14× slower (F-06).**
+
+![Server time per route chart](evidence/screenshots/chart-server-time.png)
+
+**4. One icon font could be ~77× smaller (F-07).**
+
+![Icon font size chart](evidence/screenshots/chart-icon-font.png)
+
+<sub>The screenshots were taken with headless Chrome on 1–2 Nov 2026. The Lighthouse image renders the saved run behind the numbers in the report. The charts are drawn from the measured values in [`evidence/3.1-timing.txt`](evidence/3.1-timing.txt) and [`evidence/3.3-static-headers.txt`](evidence/3.3-static-headers.txt).</sub>
+
 ### Already done well
 TLS 1.2/1.3 only · no secrets or source maps in the public code · the price is set on the server · payment status is checked with Cashfree on the server · the server sends only rendered content (no over-fetching, no personal data) · proper 404 pages with no stack traces · built-in CSRF protection on Server Actions · long-term caching and Brotli compression for static files · 30 ms response for cached pages. Full list: [REPORT §5](REPORT.md#positive-observations).
 

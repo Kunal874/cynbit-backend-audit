@@ -277,6 +277,14 @@ The other 11 advisories were checked one by one. Five don't apply on Vercel (Win
 | Largest Contentful Paint | **11.1 s** (render delay **10,430 ms**, load delay 0 ms) | 2.2 s |
 | Performance score | **56** | 88 |
 
+| Server HTML before JavaScript runs | After JavaScript runs |
+|---|---|
+| ![Home page rendered from the server HTML with scripts removed: only the navigation bar is visible](evidence/screenshots/home-js-disabled.png) | ![Home page after JavaScript runs: hero content visible](evidence/screenshots/home-js-enabled.png) |
+
+*Left: the home page's server HTML exactly as delivered, with its `<script>` tags removed and rendered in headless Chrome. Everything inside `<main>` is `opacity:0`. Right: the same page after JavaScript runs.*
+
+![Lighthouse mobile report: Performance 56, FCP 9.1 s, LCP 11.1 s; the filmstrip shows four blank frames](evidence/screenshots/lighthouse-mobile.png)
+
 **Impact:** The backend does its job: the page is prerendered and served from the edge in 30 ms. Then the `(marketing)/template` entrance animation hides all of it until JS downloads, React hydrates and the animation runs. On a mid-range phone on 4G, users see an empty page for seconds. LCP is a Core Web Vitals ranking signal, and the delay applies on **every** page because `template.tsx` wraps every route in the group. (Lab data. Field data from CrUX was not checked.)
 
 **Recommendation:** make the server HTML visible by default. Animate only `transform`, or use a CSS keyframe that starts visible, or pass `initial={false}`. → [`recommendations/rendering-and-caching.md`](recommendations/rendering-and-caching.md#1-dont-hide-server-rendered-html)
@@ -362,6 +370,8 @@ Missing: Content-Security-Policy, X-Frame-Options / frame-ancestors, X-Content-T
 | `/blog` | `private, no-store`, MISS | 853 ms (max 1,224) |
 | `/blog/this-slug-does-not-exist` | `private, no-store`, MISS | 1,233 ms → 404 |
 
+![Server time per route: dynamic routes 499–853 ms vs static routes 59–62 ms](evidence/screenshots/chart-server-time.png)
+
 Also, the home page **prefetches 9 routes** in the background, and 3 of them are these dynamic routes. So **every home-page view triggers ≥ 3 serverless renders** (253–287 ms each) that nobody asked for. `/sitemap.xml` is also rebuilt per request.
 
 **Impact:** 8–14× slower responses for content that changes only when someone publishes a post. Function invocations and DB queries grow with traffic, including bot traffic. Any random `/blog/<slug>` forces a fresh render plus DB lookup, which makes a cheap cost-amplification or DoS vector that can't be cached away.
@@ -381,6 +391,7 @@ same axes, &icon_names=<the 88 icons used>                       33,180 B   (−
 icon_names + wght fixed at 400                                   14,840 B   (−98.7 %)
 Home page total 1,684 KiB, of which this font = 1,112 KB (66 %)
 ```
+![Icon font size: 1,139.6 KB today vs 33.2 KB subset vs 14.8 KB subset with fixed weight](evidence/screenshots/chart-icon-font.png)
 The stylesheet comes from a separate origin (`fonts.googleapis.com` → `fonts.gstatic.com`), is **render-blocking**, and has no `preconnect`.
 
 **Impact:** Mobile visitors download over 1 MB before the icons render, on every first visit. That's the largest cost on the page after F-02.
