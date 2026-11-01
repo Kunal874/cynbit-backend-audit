@@ -172,3 +172,292 @@ Effort: **S** < ½ day · **M** 1–3 days · **L** > 3 days.
 | P-10 | Static assets: `immutable` 1-year cache, Brotli, HTTP/2 | [3.3](evidence/3.3-static-headers.txt) |
 | P-11 | Static pages served from the edge with a **30 ms** server response | [3.2](evidence/3.2-lighthouse.md) |
 | P-12 | Lighthouse Best Practices 100 and SEO 100; TBT 0 ms; CLS 0 | [3.2](evidence/3.2-lighthouse.md) |
+
+---
+
+## 6. Detailed findings
+
+<a id="f-01"></a>
+### F-01: Next.js 15.5.18 is 10 security patches behind
+**Category:** Security · **Severity:** High · **Confidence:** Confirmed version, impact per advisory (not exploited) · **Effort:** S
+
+**Evidence:** [`evidence/2.7-advisories.md`](evidence/2.7-advisories.md)
+```
+window.next.version          → "15.5.18"   (appDir: true)
+GitHub Advisory DB, affects=next@15.5.18 → 14 advisories; latest 15.5.x = 15.5.28
+Applies here (App Router + Server Actions):
+  GHSA-p3m5-59mp-jv5r  High    DoS in App Router using Server Actions            fixed 15.5.28
+  GHSA-m99w-x7hq-7vfj  High    DoS in App Router using Server Actions            fixed 15.5.21
+  GHSA-955p-x3mx-jcvp  Medium  Disclosure of internal Server Function endpoints  fixed 15.5.21
+```
+The other 11 advisories were checked one by one. Five don't apply on Vercel (Windows hosting, custom server, self-hosted cache, catch-all route, Vercel-exempt image DoS). Five depend on code not visible from outside. The image-optimizer RCEs are probably not exploitable because Vercel serves `/_next/image` itself.
+
+**Impact:** Two High-severity DoS issues target exactly the feature this site depends on for every form and payment. The advisories say there is **no workaround besides upgrading**. Being 10 patch releases behind also suggests there is no process for applying security updates.
+
+**Recommendation:** upgrade `next` to **15.5.28** (patch release, no breaking changes) and turn on Dependabot/Renovate security updates with a CI build gate. → [`recommendations/dependencies.md`](recommendations/dependencies.md)
+
+---
+
+<a id="f-02"></a>
+### F-02: Server-rendered page is hidden until JavaScript hydrates
+**Category:** Performance / Architecture · **Severity:** High · **Confidence:** Confirmed · **Effort:** S
+
+**Evidence:** [`evidence/3.2-lighthouse.md`](evidence/3.2-lighthouse.md)
+```html
+<main class="flex-grow"><div style="opacity:0;transform:translateY(10px)"> … whole page … </div></main>
+```
+| Lighthouse (home) | Mobile | Desktop |
+|---|---|---|
+| Server response | 30 ms | 30 ms |
+| First Contentful Paint | **9.1 s** | 0.9 s |
+| Largest Contentful Paint | **11.1 s** (render delay **10,430 ms**, load delay 0 ms) | 2.2 s |
+| Performance score | **56** | 88 |
+
+**Impact:** The backend does its job: the page is prerendered and served from the edge in 30 ms. Then the `(marketing)/template` entrance animation hides all of it until JS downloads, React hydrates and the animation runs. On a mid-range phone on 4G, users see an empty page for seconds. LCP is a Core Web Vitals ranking signal, and the delay applies on **every** page because `template.tsx` wraps every route in the group. (Lab data. Field data from CrUX was not checked.)
+
+**Recommendation:** make the server HTML visible by default. Animate only `transform`, or use a CSS keyframe that starts visible, or pass `initial={false}`. → [`recommendations/rendering-and-caching.md`](recommendations/rendering-and-caching.md#1-dont-hide-server-rendered-html)
+
+---
+
+<a id="f-03"></a>
+### F-03: Payment completion returns login credentials from a URL token that GA4 records
+**Category:** Authentication / Data handling / Architecture · **Severity:** Medium (High if `verifyBitelevatePayment` is replayable) · **Confidence:** design Confirmed from client code; replayability and webhook presence Inferred · **Effort:** M
+
+**Evidence:** [`evidence/1.6-bundle-notes.md`](evidence/1.6-bundle-notes.md) (minified client code, `app/(marketing)/bitelevate/page-*.js`)
+```js
+let e=new URLSearchParams(window.location.search),t=e.get("order_id"),a=e.get("token");
+t&&a&&( … c(a,t).then(e=>{ e.success ? (b(!0), e.bitElevateCredentials && y(e.bitElevateCredentials)) : … }))
+//  c = createServerReference("608950…", …, "verifyBitelevatePayment")
+```
+GA4 (`G-LK6CQWCWX0`) loads on every page, including this one ([1.7](evidence/1.7-endpoints.md)).
+
+**Impact:**
+1. **Credential exposure.** Login credentials for the BitElevate platform are sent to the browser and rendered on screen. If the verify action returns them again for the same `(token, orderId)`, anyone holding the return URL can retrieve them. The URL can leak through browser history, shared screenshots/links, or analytics.
+2. **Third-party leakage (confirmed by design).** GA4 sends the full `page_location`, including `?order_id=…&token=…`, to Google by default.
+3. **Lost enrolments.** Fulfilment runs when the *browser* calls verify. A user who pays and then closes the tab or loses connectivity before that call may not be enrolled, unless a Cashfree webhook exists. None is visible from outside.
+
+**Recommendation:** fulfil from a **signed Cashfree webhook** (idempotent on `order_id`). Make verify return **status only**. Deliver access through a **one-time, expiring set-password email link**. Strip query parameters from the URL after reading them. Redact `token` from analytics. → [`recommendations/payments.md`](recommendations/payments.md)
+
+---
+
+<a id="f-04"></a>
+### F-04: Public Server Actions have no visible abuse controls
+**Category:** Data validation / Security · **Severity:** Medium · **Confidence:** Inferred (server-side behaviour not observable passively) · **Effort:** M
+
+**Evidence:** [`evidence/1.6-bundle-notes.md`](evidence/1.6-bundle-notes.md), [`evidence/2.4-cors-caching-ratelimit.md`](evidence/2.4-cors-caching-ratelimit.md)
+- Client-side checks across all 5 actions: only `required` and `type="email"`. **No `maxLength`, pattern or schema library** (no zod/yup in any chunk).
+- **No CAPTCHA, Turnstile or honeypot** strings in any bundle.
+- **No `RateLimit-*` / `Retry-After` headers** on any response.
+- Action IDs and names are public in the bundle, so each action can be called directly with arbitrary FormData.
+
+**Impact:** If the server code mirrors the client (common when validation lives only in JSX), a simple script can:
+- flood the leads/newsletter tables and the sales inbox;
+- store oversized text (megabytes per field);
+- create unlimited **Cashfree orders**, each one a DB row plus a paid-API call.
+
+Each request also invokes a serverless function, which costs money.
+
+**Recommendation:** one shared pattern for every action: a **zod schema with length caps** → **rate limit per IP + action** (Upstash Redis or Vercel WAF; in-memory limits don't work across serverless instances) → **Turnstile** on the public forms → a typed `ActionResult` return. → [`recommendations/server-actions.md`](recommendations/server-actions.md)
+
+---
+
+<a id="f-05"></a>
+### F-05: No HTTP security headers
+**Category:** Security · **Severity:** Medium · **Confidence:** Confirmed · **Effort:** S (static headers) to M (nonce-based CSP)
+
+**Evidence:** [`evidence/1.4-headers.txt`](evidence/1.4-headers.txt), all 9 sampled routes. Header names present:
+```
+Age, Cache-Control, Content-Encoding, Content-Type, Date, Server, Strict-Transport-Security,
+Transfer-Encoding, Vary, X-Matched-Path, X-Vercel-Cache, X-Vercel-Id, (Etag, X-Powered-By, X-Nextjs-*)
+Missing: Content-Security-Policy, X-Frame-Options / frame-ancestors, X-Content-Type-Options,
+         Referrer-Policy, Permissions-Policy
+```
+
+**Impact:**
+- **Clickjacking:** any site can frame `/bitelevate` (payment form) or `/contact` and trick users into clicking.
+- **No XSS defence in depth:** a single injection (see F-13) would run with no CSP to block it or report it.
+- **MIME sniffing** is not disabled.
+- No explicit policy limits camera/microphone/geolocation for embedded content.
+
+**Recommendation:** add a `headers()` block in `next.config.ts` for the static headers, plus a nonce-based CSP in `middleware.ts` that allows only the origins observed (GA, Google Fonts, Cashfree). Start CSP in `Report-Only` mode. → [`recommendations/security-headers.md`](recommendations/security-headers.md)
+
+---
+
+<a id="f-06"></a>
+### F-06: Rarely changing pages are rendered per request
+**Category:** Architecture / Performance · **Severity:** Medium · **Confidence:** Confirmed · **Effort:** S
+
+**Evidence:** [`evidence/3.1-timing.txt`](evidence/3.1-timing.txt), [`evidence/1.4-headers.txt`](evidence/1.4-headers.txt), [`evidence/2.3-errors.txt`](evidence/2.3-errors.txt), [`evidence/1.7-endpoints.md`](evidence/1.7-endpoints.md)
+
+| Route | Cache | Server time (avg of 3) |
+|---|---|---|
+| `/`, `/services` (SSG) | edge HIT | **59–62 ms** |
+| `/case-studies` | `private, no-store`, MISS | 499 ms |
+| `/careers` (*payload has no DB data at all*) | `private, no-store`, MISS | 634 ms (max 1,078) |
+| `/blog/[slug]` | `private, no-store`, MISS | 659 ms |
+| `/blog` | `private, no-store`, MISS | 853 ms (max 1,224) |
+| `/blog/this-slug-does-not-exist` | `private, no-store`, MISS | 1,233 ms → 404 |
+
+Also, the home page **prefetches 9 routes** in the background, and 3 of them are these dynamic routes. So **every home-page view triggers ≥ 3 serverless renders** (253–287 ms each) that nobody asked for. `/sitemap.xml` is also rebuilt per request.
+
+**Impact:** 8–14× slower responses for content that changes only when someone publishes a post. Function invocations and DB queries grow with traffic, including bot traffic. Any random `/blog/<slug>` forces a fresh render plus DB lookup, which makes a cheap cost-amplification or DoS vector that can't be cached away.
+
+**Recommendation:** ISR with `revalidate` plus `generateStaticParams`, `dynamicParams = false` (or cached 404s) for slugs, on-demand `revalidatePath` when content is published, and removing whatever opts `/careers` out of static rendering. → [`recommendations/rendering-and-caching.md`](recommendations/rendering-and-caching.md#2-cache-content-that-rarely-changes)
+
+---
+
+<a id="f-07"></a>
+### F-07: 1.1 MB render-blocking icon font for 88 icons
+**Category:** Performance · **Severity:** Medium · **Confidence:** Confirmed (measured) · **Effort:** S
+
+**Evidence:** [`evidence/3.3-static-headers.txt`](evidence/3.3-static-headers.txt), [`evidence/3.4-weight.md`](evidence/3.4-weight.md)
+```
+Material Symbols Outlined, wght 100..700, FILL 0..1, all icons  1,139,560 B   ← loaded today
+same axes, &icon_names=<the 88 icons used>                       33,180 B   (−97.1 %)
+icon_names + wght fixed at 400                                   14,840 B   (−98.7 %)
+Home page total 1,684 KiB, of which this font = 1,112 KB (66 %)
+```
+The stylesheet comes from a separate origin (`fonts.googleapis.com` → `fonts.gstatic.com`), is **render-blocking**, and has no `preconnect`.
+
+**Impact:** Mobile visitors download over 1 MB before the icons render, on every first visit. That's the largest cost on the page after F-02.
+
+**Recommendation:** add `&icon_names=` with the used icons (one URL change), or switch to tree-shaken SVG icons, plus a `preconnect`. → [`recommendations/rendering-and-caching.md`](recommendations/rendering-and-caching.md#3-subset-the-icon-font)
+
+---
+
+<a id="f-08"></a>
+### F-08: DMARC is not enforced and DKIM is not published
+**Category:** Security (email) · **Severity:** Medium · **Confidence:** Confirmed · **Effort:** S
+
+**Evidence:** [`evidence/1.1-dns.txt`](evidence/1.1-dns.txt)
+```
+_dmarc.cynbit.in  TXT  "v=DMARC1; p=none;"                    ← no enforcement, no rua= reports
+cynbit.in         TXT  "v=spf1 include:secureserver.net -all"  ✔ (chain includes spf.protection.outlook.com)
+selector1._domainkey.cynbit.in  → NXDOMAIN                     ← Microsoft 365 DKIM not enabled for the custom domain
+selector2._domainkey.cynbit.in  → NXDOMAIN
+```
+
+**Impact:** Receivers are told to deliver mail that fails DMARC, so an attacker can send `From: hr@cynbit.in` fake offer letters or "fee payment" requests. That is a well-known scam pattern against internship candidates, and this site sells a paid programme to students. Without DKIM, legitimate mail passes DMARC only through SPF and fails when forwarded. With no `rua`, Cynbit never learns about spoofing.
+
+**Recommendation:** enable M365 DKIM (publish the two selector CNAMEs), add `rua=` reporting, then move to `p=quarantine` → `p=reject`. → [`recommendations/email-and-privacy.md`](recommendations/email-and-privacy.md)
+
+---
+
+<a id="f-09"></a>
+### F-09: GA4 with advertising features fires before any consent
+**Category:** Data handling / Privacy · **Severity:** Low · **Confidence:** Confirmed · **Effort:** S
+
+**Evidence:** [`evidence/1.7-endpoints.md`](evidence/1.7-endpoints.md). On first load, with no banner shown: `googletagmanager.com/gtag/js`, `analytics.google.com` collect, `stats.g.doubleclick.net`, **`google.co.in/ads/ga-audiences`** (Google Signals / ads personalisation).
+
+**Impact:** Non-essential tracking and ad-audience building start without consent. India's DPDP Act 2023 requires consent for this kind of processing, and EU visitors would expect GDPR consent. Combined with F-03, payment URLs are also sent to Google.
+
+**Recommendation:** Consent Mode v2 defaulting to `denied`, a lightweight consent banner, ads features off unless needed, and URL redaction for sensitive parameters. → [`recommendations/email-and-privacy.md`](recommendations/email-and-privacy.md)
+
+---
+
+<a id="f-10"></a>
+### F-10: Non-canonical host, temporary redirect and meaningless `lastmod`
+**Category:** Architecture / Data correctness · **Severity:** Low · **Confidence:** Confirmed · **Effort:** S
+
+**Evidence:** [`evidence/1.4-headers-apex.txt`](evidence/1.4-headers-apex.txt), [`evidence/1.5-public-files.txt`](evidence/1.5-public-files.txt), [`evidence/3.1-timing.txt`](evidence/3.1-timing.txt)
+```
+GET https://cynbit.in/  → 307 Temporary Redirect, Cache-Control: public, max-age=0, must-revalidate → https://www.cynbit.in/
+sitemap.xml: 82 <loc> entries, all https://cynbit.in/... (each one redirects)
+og:url, JSON-LD @id/url, robots.txt Sitemap: → https://cynbit.in
+static pages <lastmod>2026-11-01T17:28:39.452Z</lastmod>  ← equals request time
+```
+
+**Impact:** +114–373 ms on every apex visit, because the redirect is never cached and is marked temporary. Crawlers follow a redirect for every sitemap URL. Metadata points at a host that isn't served. `lastmod` changes on every fetch, so search engines learn to ignore it.
+
+**Recommendation:** pick one canonical host (`www`, as served) and make the apex redirect **308 permanent** in Vercel. Generate sitemap/metadata from a single `SITE_URL`. Use real `updatedAt` values and cache the sitemap. → [`recommendations/rendering-and-caching.md`](recommendations/rendering-and-caching.md#4-canonical-host-and-sitemap)
+
+---
+
+<a id="f-11"></a>
+### F-11: Disclosure and transport hardening
+**Category:** Security · **Severity:** Low · **Confidence:** Confirmed · **Effort:** S
+
+**Evidence:** [`evidence/1.4-headers.txt`](evidence/1.4-headers.txt), [`evidence/1.1-dns.txt`](evidence/1.1-dns.txt), [`evidence/1.5-public-files.txt`](evidence/1.5-public-files.txt)
+- `X-Powered-By: Next.js` on dynamic routes (`poweredByHeader` not disabled).
+- `Strict-Transport-Security: max-age=63072000`, without `includeSubDomains`/`preload`, so `portal.`, `support.` and `bitelevate.` are not covered.
+- No CAA record on the apex, so any CA may issue certificates for `cynbit.in`.
+- No `/.well-known/security.txt` (RFC 9116), so there is no disclosure channel for researchers.
+- `robots.txt` lists `/admin/` and `/portal/`. That's fine, as long as those paths are protected server-side, which couldn't be verified.
+
+**Recommendation:** `poweredByHeader: false`; extend HSTS once all subdomains serve HTTPS; add CAA `0 issue "letsencrypt.org"`; publish `security.txt`. → [`recommendations/security-headers.md`](recommendations/security-headers.md)
+
+---
+
+<a id="f-12"></a>
+### F-12: No machine-readable error contract
+**Category:** Error handling · **Severity:** Low · **Confidence:** Confirmed · **Effort:** S
+
+**Evidence:** [`evidence/2.3-errors.txt`](evidence/2.3-errors.txt), [`evidence/1.6-bundle-notes.md`](evidence/1.6-bundle-notes.md)
+```
+GET /api/this-route-does-not-exist → 404, Content-Type: text/html (the marketing 404 page, 15 KB)
+Server Action results: ad-hoc { success, error?, orderId?, token?, orderStatus?, bitElevateCredentials? }
+```
+
+**Impact:** Any future API route (for example a Cashfree webhook, see F-03) and any non-browser client get HTML on errors. Action errors are free-text strings, so the UI can't tell "validation failed" from "rate limited" from "payment gateway down", and logs can't be aggregated by error code.
+
+**Recommendation:** a typed `ActionResult<T>` union with stable `code`s for actions, and RFC 9457 `application/problem+json` for `/api/*` (including a JSON catch-all 404). → [`recommendations/server-actions.md`](recommendations/server-actions.md#4-one-result-envelope)
+
+---
+
+<a id="f-13"></a>
+### F-13: JSON-LD is built from DB fields without escaping
+**Category:** Security (hardening) · **Severity:** Low · **Confidence:** Confirmed pattern; no injection observed · **Effort:** S
+
+**Evidence:** [`evidence/2.1-payloads.md`](evidence/2.1-payloads.md). `/blog/[slug]` renders `<script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(post…)}}>`, and the payload contains no `<`.
+
+**Impact:** `JSON.stringify` doesn't escape `<`. A post title or description containing `</script><script>…` (from a compromised CMS/admin account or a future user-generated field) would break out of the tag and run as script on every visitor's page. There's no CSP to stop it (F-05).
+
+**Recommendation:** `JSON.stringify(data).replace(/</g, '\\u003c')` in one shared `<JsonLd>` component. → [`recommendations/security-headers.md`](recommendations/security-headers.md#4-safe-json-ld)
+
+---
+
+<a id="f-14"></a>
+### F-14: Structured data lists the participant fee as a salary
+**Category:** Data correctness · **Severity:** Low · **Confidence:** Confirmed · **Effort:** S
+
+**Evidence:** [`evidence/1.6-bundle-notes.md`](evidence/1.6-bundle-notes.md). On `/bitelevate`, JSON-LD has `@type: JobPosting` with `baseSalary: { MonetaryAmount, currency: INR, value: 3999 }` alongside `Offer { price: "3999", category: "Remote Software Engineering Internship" }`, while the page says "₹3,999 enrollment fee".
+
+**Impact:** Search engines and job aggregators that read `JobPosting` may show the programme as *paying* ₹3,999. That misinforms candidates, and Google's job-posting guidelines treat misleading salary data as a policy issue.
+
+**Recommendation:** model the programme as a `Course`/`EducationalOccupationalProgram` with an `Offer`, or remove `baseSalary`. → [`recommendations/email-and-privacy.md`](recommendations/email-and-privacy.md#4-structured-data)
+
+---
+
+<a id="f-15"></a>
+### F-15: Third-party placeholder images and short cache lifetimes
+**Category:** Performance / Privacy · **Severity:** Low · **Confidence:** Confirmed · **Effort:** S
+
+**Evidence:** [`evidence/1.6-bundle-notes.md`](evidence/1.6-bundle-notes.md), [`evidence/3.3-static-headers.txt`](evidence/3.3-static-headers.txt)
+- The shared layout renders an avatar stack from `https://i.pravatar.cc/150?u=…` (a random-face placeholder service) through `next/image`, so `images.remotePatterns` allows that host. Backgrounds and images are hotlinked from `transparenttextures.com` and `images.unsplash.com`.
+- `/_next/image?...` and `public/` files (`/logo.svg`) are served with `Cache-Control: public, max-age=0, must-revalidate`.
+
+**Impact:** Production depends on third-party placeholder hosts for uptime and speed, and visitor IPs go to them. Browsers revalidate images and the logo on every navigation.
+
+**Recommendation:** self-host the assets, narrow `remotePatterns` to hosts actually needed, set `images.minimumCacheTTL`, and add long-cache headers for `public/` assets. → [`recommendations/rendering-and-caching.md`](recommendations/rendering-and-caching.md#5-images-and-public-assets)
+
+---
+
+## 7. What passive testing could not verify
+
+| Area | Why not | How to verify with access |
+|---|---|---|
+| Authentication & sessions (portal, admin) | Requires login; out of public scope | Review cookie flags, token lifetime and server-side logout; test with own account |
+| Server-side validation of Server Action inputs | Would require crafted submissions | Code review of each action + unit tests with oversized/malformed input |
+| Rate limiting / WAF on Server Actions | Would require bursts of requests | Vercel Firewall dashboard; code review; controlled load test on staging |
+| Cashfree webhook + idempotency of fulfilment | Server-to-server, invisible to clients | Check for `/api/*webhook*` route and signature verification; replay test on sandbox |
+| Whether `verifyBitelevatePayment` returns credentials more than once | Would require replaying a real order | Sandbox order, call verify twice |
+| `/admin` and `/portal` access control | Probing disallowed paths is out of scope | Code review of middleware/auth guards |
+| Database access controls, backups, migrations | Not observable from outside | Infra review (DB roles, network access, backup/restore drill) |
+| Logging, monitoring, alerting, error tracking | Not observable from outside | Check for Sentry/OTel, Vercel log drains, alert routing |
+| Secret management | Not observable from outside | Review Vercel env vars, rotation, preview vs production separation |
+
+---
+
+## 8. Recommendations
+
+Code-level fixes with snippets are in [`recommendations/`](recommendations/), one file per theme. The target architecture and a prioritised roadmap are in [`recommendations/architecture.md`](recommendations/architecture.md).
