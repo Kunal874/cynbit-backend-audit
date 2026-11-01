@@ -15,7 +15,7 @@ Deliverables required by the brief:
 Tick a box in the same commit that finishes the step. The first unticked box is where work resumes.
 
 - [x] **0.1** Repo, plan, rules of engagement, findings log
-- [ ] **1.1** DNS, hosting, email-auth records
+- [x] **1.1** DNS, hosting, email-auth records
 - [ ] **1.2** Subdomains from Certificate Transparency
 - [ ] **1.3** TLS certificate and protocol versions
 - [ ] **1.4** HTTP response headers (security, caching, server leakage)
@@ -131,6 +131,9 @@ Look for: hosting provider (Vercel IPs / CNAME), SPF record and its `-all`/`~all
 curl -s "https://crt.sh/?q=%25.cynbit.in&output=json" \
   | grep -o '"name_value":"[^"]*"' | cut -d'"' -f4 | sed 's/\\n/\n/g' | sort -u \
   > evidence/1.2-ct-subdomains.txt
+# crt.sh often returns 502, so use Cert Spotter as the fallback:
+curl -s "https://api.certspotter.com/v1/issuances?domain=cynbit.in&include_subdomains=true&expand=dns_names" \
+  | grep -oE '"[a-z0-9*.-]*cynbit\.in"' | tr -d '"' | sort | uniq -c
 ```
 **Record only.** A subdomain is in scope only if the public site links to it or calls it (confirmed in 1.7). Look for: api.*, admin.*, staging.*, dev.* — exposure of non-prod environments is itself a finding.
 
@@ -140,10 +143,11 @@ One handshake per check:
 { echo | openssl s_client -connect $H:443 -servername $H 2>/dev/null \
     | openssl x509 -noout -subject -issuer -dates -ext subjectAltName
   for v in tls1 tls1_1 tls1_2 tls1_3; do
-    printf "%s: " $v; echo | openssl s_client -connect $H:443 -servername $H -$v 2>&1 \
-      | grep -qE '^ *Protocol *:' && echo accepted || echo rejected
+    printf "%s: " $v; echo | openssl s_client -connect $H:443 -servername $H -$v -cipher 'DEFAULT:@SECLEVEL=0' 2>&1 \
+      | grep -E '^New,|alert protocol version' | head -1
   done; } > evidence/1.3-tls.txt
 ```
+`New, TLSv1.x, Cipher is …` = accepted; `alert protocol version` / `Cipher is (NONE)` = rejected. Don't grep for `Protocol :` because OpenSSL prints it even when the handshake fails. `@SECLEVEL=0` is needed because OpenSSL 3 won't even offer TLS 1.0/1.1 by default.
 Look for: TLS 1.0/1.1 accepted, cert expiry window, issuer, wildcard vs SAN list.
 
 ### 1.4 Response headers

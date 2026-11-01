@@ -1,0 +1,42 @@
+## cynbit.in A
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"cynbit.in.","type":1}],"Answer":[{"name":"cynbit.in.","type":1,"TTL":1800,"data":"216.198.79.1"}],"Comment":"Response from 97.74.106.17."}
+## cynbit.in AAAA
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"cynbit.in.","type":28}],"Authority":[{"name":"cynbit.in.","type":6,"TTL":600,"data":"ns33.domaincontrol.com. dns.jomax.net. 2026092301 28800 7200 604800 600"}],"Comment":"Response from 97.74.106.17."}
+## cynbit.in CNAME
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"cynbit.in.","type":5}],"Authority":[{"name":"cynbit.in.","type":6,"TTL":600,"data":"ns33.domaincontrol.com. dns.jomax.net. 2026092301 28800 7200 604800 600"}],"Comment":"Response from 97.74.106.17."}
+## cynbit.in NS
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"cynbit.in.","type":2}],"Answer":[{"name":"cynbit.in.","type":2,"TTL":3600,"data":"ns34.domaincontrol.com."},{"name":"cynbit.in.","type":2,"TTL":3600,"data":"ns33.domaincontrol.com."}],"Comment":"Response from 97.74.106.17."}
+## cynbit.in MX
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"cynbit.in.","type":15}],"Answer":[{"name":"cynbit.in.","type":15,"TTL":3600,"data":"0 cynbit-in.mail.protection.outlook.com."}],"Comment":"Response from 173.201.74.17."}
+## cynbit.in TXT
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"cynbit.in.","type":16}],"Answer":[{"name":"cynbit.in.","type":16,"TTL":3600,"data":"google-site-verification=SUGzGG8ggu0KHqJ3k5CGDi8jn4fIbdiLuC5onyPuC9U"},{"name":"cynbit.in.","type":16,"TTL":3600,"data":"NETORG20603639.onmicrosoft.com"},{"name":"cynbit.in.","type":16,"TTL":3600,"data":"v=spf1 include:secureserver.net -all"},{"name":"cynbit.in.","type":16,"TTL":3600,"data":"google-site-verification=HlFN-XoAM8jcNR4FStVSkoxPoA_q78YrXiRGwNjDHwQ"}],"Comment":"Response from 173.201.74.17."}
+## cynbit.in CAA
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"cynbit.in.","type":257}],"Authority":[{"name":"cynbit.in.","type":6,"TTL":600,"data":"ns33.domaincontrol.com. dns.jomax.net. 2026092301 28800 7200 604800 600"}],"Comment":"Response from 173.201.74.17."}
+## www.cynbit.in A
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"www.cynbit.in.","type":1}],"Answer":[{"name":"www.cynbit.in.","type":5,"TTL":400,"data":"e12d688042344235.vercel-dns-017.com."},{"name":"e12d688042344235.vercel-dns-017.com.","type":1,"TTL":300,"data":"216.198.79.1"},{"name":"e12d688042344235.vercel-dns-017.com.","type":1,"TTL":300,"data":"64.29.17.1"}],"Comment":"Response from 205.251.196.168."}
+## www.cynbit.in AAAA
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"www.cynbit.in.","type":28}],"Answer":[{"name":"www.cynbit.in.","type":5,"TTL":1800,"data":"e12d688042344235.vercel-dns-017.com."}],"Authority":[{"name":"vercel-dns-017.com.","type":6,"TTL":900,"data":"ns1.vercel-dns-017.com. awsdns-hostmaster.amazon.com. 1 3600 900 1209600 900"}],"Comment":"Response from 205.251.195.122."}
+## www.cynbit.in CNAME
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"www.cynbit.in.","type":5}],"Answer":[{"name":"www.cynbit.in.","type":5,"TTL":1800,"data":"e12d688042344235.vercel-dns-017.com."}],"Comment":"Response from 173.201.74.17."}
+## www.cynbit.in NS
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"www.cynbit.in.","type":2}],"Answer":[{"name":"www.cynbit.in.","type":5,"TTL":1799,"data":"e12d688042344235.vercel-dns-017.com."}],"Authority":[{"name":"vercel-dns-017.com.","type":6,"TTL":900,"data":"ns1.vercel-dns-017.com. awsdns-hostmaster.amazon.com. 1 3600 900 1209600 900"}],"Comment":"Response from 2600:9000:5303:7a00::1."}
+## www.cynbit.in MX
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"www.cynbit.in.","type":15}],"Answer":[{"name":"www.cynbit.in.","type":5,"TTL":1800,"data":"e12d688042344235.vercel-dns-017.com."}],"Authority":[{"name":"vercel-dns-017.com.","type":6,"TTL":900,"data":"ns1.vercel-dns-017.com. awsdns-hostmaster.amazon.com. 1 3600 900 1209600 900"}],"Comment":"Response from 205.251.199.204."}
+## www.cynbit.in TXT
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"www.cynbit.in.","type":16}],"Answer":[{"name":"www.cynbit.in.","type":5,"TTL":1799,"data":"e12d688042344235.vercel-dns-017.com."}],"Authority":[{"name":"vercel-dns-017.com.","type":6,"TTL":900,"data":"ns1.vercel-dns-017.com. awsdns-hostmaster.amazon.com. 1 3600 900 1209600 900"}],"Comment":"Response from 2600:9000:5303:7a00::1."}
+## www.cynbit.in CAA
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"www.cynbit.in.","type":257}],"Answer":[{"name":"www.cynbit.in.","type":5,"TTL":1799,"data":"e12d688042344235.vercel-dns-017.com."},{"name":"e12d688042344235.vercel-dns-017.com.","type":257,"TTL":3600,"data":"0 issue \"sectigo.com\""},{"name":"e12d688042344235.vercel-dns-017.com.","type":257,"TTL":3600,"data":"0 issue \"letsencrypt.org\""},{"name":"e12d688042344235.vercel-dns-017.com.","type":257,"TTL":3600,"data":"0 issue \"pki.goog\""},{"name":"e12d688042344235.vercel-dns-017.com.","type":257,"TTL":3600,"data":"0 issue \"globalsign.com\""}],"Comment":"Response from 205.251.195.122."}
+## _dmarc.cynbit.in A
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"_dmarc.cynbit.in.","type":1}],"Authority":[{"name":"cynbit.in.","type":6,"TTL":600,"data":"ns33.domaincontrol.com. dns.jomax.net. 2026092301 28800 7200 604800 600"}],"Comment":"Response from 97.74.106.17."}
+## _dmarc.cynbit.in AAAA
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"_dmarc.cynbit.in.","type":28}],"Authority":[{"name":"cynbit.in.","type":6,"TTL":600,"data":"ns33.domaincontrol.com. dns.jomax.net. 2026092301 28800 7200 604800 600"}],"Comment":"Response from 173.201.74.17."}
+## _dmarc.cynbit.in CNAME
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"_dmarc.cynbit.in.","type":5}],"Authority":[{"name":"cynbit.in.","type":6,"TTL":600,"data":"ns33.domaincontrol.com. dns.jomax.net. 2026092301 28800 7200 604800 600"}],"Comment":"Response from 97.74.106.17."}
+## _dmarc.cynbit.in NS
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"_dmarc.cynbit.in.","type":2}],"Authority":[{"name":"cynbit.in.","type":6,"TTL":600,"data":"ns33.domaincontrol.com. dns.jomax.net. 2026092301 28800 7200 604800 600"}],"Comment":"Response from 97.74.106.17."}
+## _dmarc.cynbit.in MX
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"_dmarc.cynbit.in.","type":15}],"Authority":[{"name":"cynbit.in.","type":6,"TTL":600,"data":"ns33.domaincontrol.com. dns.jomax.net. 2026092301 28800 7200 604800 600"}],"Comment":"Response from 173.201.74.17."}
+## _dmarc.cynbit.in TXT
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"_dmarc.cynbit.in.","type":16}],"Answer":[{"name":"_dmarc.cynbit.in.","type":16,"TTL":3600,"data":"v=DMARC1; p=none;"}],"Comment":"Response from 97.74.106.17."}
+## _dmarc.cynbit.in CAA
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"_dmarc.cynbit.in.","type":257}],"Authority":[{"name":"cynbit.in.","type":6,"TTL":600,"data":"ns33.domaincontrol.com. dns.jomax.net. 2026092301 28800 7200 604800 600"}],"Comment":"Response from 173.201.74.17."}
