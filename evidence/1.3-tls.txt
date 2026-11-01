@@ -1,0 +1,10 @@
+subject=CN=www.cynbit.in
+issuer=C=US, O=Let's Encrypt, CN=YR2
+notBefore=Sep 25 04:47:44 2026 GMT
+notAfter=Dec 24 04:47:43 2026 GMT
+X509v3 Subject Alternative Name: 
+    DNS:www.cynbit.in
+tls1: rejected (alert protocol version)
+tls1_1: rejected (alert protocol version)
+tls1_2: New, TLSv1.2, Cipher is ECDHE-RSA-AES128-GCM-SHA256
+tls1_3: New, TLSv1.3, Cipher is TLS_AES_128_GCM_SHA256
