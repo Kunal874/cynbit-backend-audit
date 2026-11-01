@@ -36,7 +36,7 @@ Tick a box in the same commit that finishes the step. The first unticked box is 
 - [x] **3.4** Page weight and request waterfall
 - [x] **4.1** `REPORT.md`: architecture, API structure, findings table
 - [x] **4.2** `REPORT.md`: detailed findings with evidence
-- [ ] **5.1** `recommendations/`: code snippets for each Medium+ finding
+- [x] **5.1** `recommendations/`: code snippets for each Medium+ finding
 - [ ] **5.2** Target architecture diagram + prioritized roadmap
 - [ ] **6.1** `README.md`: executive summary + links
 - [ ] **6.2** Hygiene pass (no tokens/cookies/PII), render check on GitHub
