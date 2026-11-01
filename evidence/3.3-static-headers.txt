@@ -1,0 +1,46 @@
+# 3.3 Static asset response headers, 2026-11-01 23:14 IST
+## /_next/static/css/ab1584e3d32cd2d2.css
+HTTP/1.1 200 OK
+Age: 47450
+Cache-Control: public,max-age=31536000,immutable
+Content-Encoding: br
+Content-Type: text/css; charset=utf-8
+X-Vercel-Cache: HIT
+[wire bytes=28397]
+## /_next/static/chunks/1255-eae4096fb21f1304.js
+HTTP/1.1 200 OK
+Age: 256434
+Cache-Control: public,max-age=31536000,immutable
+Content-Encoding: br
+Content-Type: application/javascript; charset=utf-8
+X-Vercel-Cache: HIT
+[wire bytes=46143]
+## /_next/static/media/636a5ac981f94f8b-s.p.woff2
+HTTP/1.1 200 OK
+Age: 45204
+Cache-Control: public,max-age=31536000,immutable
+Content-Type: font/woff2
+X-Vercel-Cache: HIT
+[wire bytes=27272]
+## /logo.svg
+HTTP/1.1 200 OK
+Age: 255523
+Cache-Control: public, max-age=0, must-revalidate
+Content-Encoding: br
+Content-Type: image/svg+xml
+X-Vercel-Cache: HIT
+[wire bytes=5839]
+## /_next/image?url=%2Fstudents%2FAditya%20Verma.png&w=256&q=75
+HTTP/1.1 200 OK
+Age: 311293
+Cache-Control: public, max-age=0, must-revalidate
+Content-Type: image/webp
+X-Vercel-Cache: HIT
+[wire bytes=8174]
+
+# Material Symbols icon font (render-blocking Google Fonts stylesheet on every page)
+full variable font as linked (wght 100..700, FILL 0..1, all icons): 1,139,560 bytes woff2
+icons actually used across 8 crawled pages: 88
+subset via &icon_names=<88 names>, same axes:                       33,180 bytes  (-97.1%)
+subset via &icon_names=<88 names>, wght fixed @400, FILL 0..1:      14,840 bytes  (-98.7%)
+# measured 2026-11-01 23:15 IST by fetching the Google Fonts CSS with a Chrome UA and downloading the referenced woff2
