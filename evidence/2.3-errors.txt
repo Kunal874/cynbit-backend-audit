@@ -1,0 +1,30 @@
+## GET /api/this-route-does-not-exist
+HTTP/1.1 404 Not Found
+Cache-Control: public, max-age=0, must-revalidate
+Content-Type: text/html; charset=utf-8
+X-Matched-Path: /404
+X-Next-Error-Status: 404
+X-Vercel-Cache: HIT
+[time_total=0.259245s bytes=15072]
+title: Cynbit Technologies | AI Automation &amp; Software Solutions Jaipur
+body hints: Error Code: 404 digest 
+## GET /blog/this-slug-does-not-exist
+HTTP/1.1 404 Not Found
+Cache-Control: private, no-cache, no-store, max-age=0, must-revalidate
+Content-Type: text/html; charset=utf-8
+X-Matched-Path: /blog/[slug]
+X-Powered-By: Next.js
+X-Vercel-Cache: MISS
+[time_total=1.233098s bytes=13320]
+title: Cynbit Technologies | AI Automation &amp; Software Solutions Jaipur
+body hints: digest 
+## GET /case-studies/this-slug-does-not-exist
+HTTP/1.1 404 Not Found
+Cache-Control: private, no-cache, no-store, max-age=0, must-revalidate
+Content-Type: text/html; charset=utf-8
+X-Matched-Path: /case-studies/[slug]
+X-Powered-By: Next.js
+X-Vercel-Cache: MISS
+[time_total=0.533905s bytes=13440]
+title: Cynbit Technologies | AI Automation &amp; Software Solutions Jaipur
+body hints: digest 
