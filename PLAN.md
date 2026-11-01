@@ -16,7 +16,7 @@ Tick a box in the same commit that finishes the step. The first unticked box is 
 
 - [x] **0.1** Repo, plan, rules of engagement, findings log
 - [x] **1.1** DNS, hosting, email-auth records
-- [ ] **1.2** Subdomains from Certificate Transparency
+- [x] **1.2** Subdomains from Certificate Transparency
 - [ ] **1.3** TLS certificate and protocol versions
 - [ ] **1.4** HTTP response headers (security, caching, server leakage)
 - [ ] **1.5** Public files: robots.txt, sitemap.xml, security.txt

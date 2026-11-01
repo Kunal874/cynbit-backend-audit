@@ -1,0 +1,10 @@
+# 1.2 Subdomains from Certificate Transparency
+# crt.sh returned 502 Bad Gateway on 2026-11-01 22:59 IST; used Cert Spotter API (api.certspotter.com) instead.
+# 8 certificates, not_before 2026-05-20 .. 2026-10-20. Count = number of certificates naming the host.
+      2 support.cynbit.in
+      2 portal.cynbit.in
+      2 bitelevate.cynbit.in
+      1 www.cynbit.in
+      1 cynbit.in
+
+# Scope: record only. A host is analysed only if the public site links to it or calls it (see 1.7).
