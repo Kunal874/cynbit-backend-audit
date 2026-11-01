@@ -40,3 +40,9 @@
 {"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"_dmarc.cynbit.in.","type":16}],"Answer":[{"name":"_dmarc.cynbit.in.","type":16,"TTL":3600,"data":"v=DMARC1; p=none;"}],"Comment":"Response from 97.74.106.17."}
 ## _dmarc.cynbit.in CAA
 {"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"_dmarc.cynbit.in.","type":257}],"Authority":[{"name":"cynbit.in.","type":6,"TTL":600,"data":"ns33.domaincontrol.com. dns.jomax.net. 2026092301 28800 7200 604800 600"}],"Comment":"Response from 173.201.74.17."}
+
+## DKIM check (2026-11-01 23:20 IST)
+## selector1._domainkey.cynbit.in CNAME
+{"Status":3,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"selector1._domainkey.cynbit.in.","type":5}],"Authority":[{"name":"cynbit.in.","type":6,"TTL":600,"data":"ns33.domaincontrol.com. dns.jomax.net. 2026092301 28800 7200 604800 600"}],"Comment":"Response from 97.74.106.17."}
+## selector2._domainkey.cynbit.in CNAME
+{"Status":3,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"selector2._domainkey.cynbit.in.","type":5}],"Authority":[{"name":"cynbit.in.","type":6,"TTL":600,"data":"ns33.domaincontrol.com. dns.jomax.net. 2026092301 28800 7200 604800 600"}],"Comment":"Response from 173.201.74.17."}
