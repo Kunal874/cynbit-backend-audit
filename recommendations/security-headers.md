@@ -105,6 +105,6 @@ export function JsonLd({ data }: { data: Record<string, unknown> }) {
 curl -sI https://www.cynbit.in/ | grep -iE 'content-security|x-frame|x-content-type|referrer-policy|permissions-policy|x-powered-by'
 ```
 - Expect five security headers and **no** `X-Powered-By`.
-- securityheaders.com grade moves from **F** to **A** (A+ once CSP is enforced without `unsafe-inline` on dynamic routes).
+- securityheaders.com lists every header above as present (today it lists them all as missing).
 - Try to frame the site: `<iframe src="https://www.cynbit.in/bitelevate">` on any other origin is refused.
 - `dig CAA cynbit.in` lists the four CAs; `https://www.cynbit.in/.well-known/security.txt` returns 200 `text/plain`.
